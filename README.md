@@ -24,18 +24,19 @@ This project is a library application built with .NET 8 using a classic architec
    ```bash
    dotnet restore
 
-3.Run the project:
+3. Run the project:
 
    ```bash
    dotnet run
 
-4.Access the Swagger interface in your browser:
+4. Access the Swagger interface in your browser:
 
 Go to https://localhost:{port}/swagger.
 
-##Usage
+## Usage
 
-You can access and test the API endpoints using the Swagger interface. For more information about the project and how to contribute, check out the Frontend Project.
+You can access and test the API endpoints using the Swagger interface. For more information about the project and how to contribute, check out the [Frontend Project](https://github.com/atillagungor/library.app).
 
-License
-This project is licensed under the MIT License. For detailed information, see the LICENSE file.
+## License
+
+This project is licensed under the MIT License. For detailed information, see the [LICENSE](./LICENSE) file.
