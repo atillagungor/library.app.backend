@@ -7,10 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Responses\" />
-    <Folder Include="DTOs\Requests\" />
+    <Folder Include="DTOs\Requests\Category\" />
+    <Folder Include="DTOs\Requests\Admin\" />
+    <Folder Include="DTOs\Requests\Role\" />
+    <Folder Include="DTOs\Requests\User\" />
+    <Folder Include="DTOs\Responses\Admin\" />
+    <Folder Include="DTOs\Responses\Category\" />
+    <Folder Include="DTOs\Responses\Role\" />
+    <Folder Include="DTOs\Responses\User\" />
     <Folder Include="Rules\" />
-    <Folder Include="Profiles\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Entities\Entities.csproj" />
   </ItemGroup>
 
 </Project>
