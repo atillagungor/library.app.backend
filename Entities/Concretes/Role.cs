@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Concretes;
 
-public class Role:Base
+public class Role : Entity<Guid>
 {
     [Required]
     public string Name { get; set; }

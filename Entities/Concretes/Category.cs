@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Concretes;
 
-public class Category:Base
+public class Category : Entity<Guid>
 {
     [StringLength(50)]
     [Required]

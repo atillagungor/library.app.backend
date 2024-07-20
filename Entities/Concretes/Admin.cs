@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Concretes;
 
-public class Admin:Base
+public class Admin : Entity<Guid>
 {
     [Required]
     public string Username { get; set; }

@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DataAccess.Contexts;
+using DataAccess.Abstracts;
+using DataAccess.Concretes.EntityFramework;
 
 namespace DataAccess;
 public static class DataAccessServiceRegistration
@@ -12,11 +14,15 @@ public static class DataAccessServiceRegistration
 #if _WINDOWS
         services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("LibraryAppDb")));
 #else
-        services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("LibraryAppDb")));
+        services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("LibraryAppDb2")));
 #endif
 
         services.AddScoped<IUserDal, EfUserDal>();
         services.AddScoped<ICategoryDal, EfCategoryDal>();
+        services.AddScoped<IBookDal, EfBookDal>();
+        services.AddScoped<IAdminDal, EfAdminDal>();
+        services.AddScoped<IRoleDal, EfRoleDal>();
+        services.AddScoped<IAuthorDal, EfAuthorDal>();
 
         return services;
     }
