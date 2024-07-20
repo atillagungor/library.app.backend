@@ -1,9 +1,7 @@
 ﻿using Business.Abstracts;
 using Business.Concretes;
-using Business.EmailSenderProcess;
 using Core.Business.Rules;
 using Core.Entities;
-using Core.Utilities.Security.Jwt;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 

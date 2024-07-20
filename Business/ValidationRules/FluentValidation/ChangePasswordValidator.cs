@@ -7,8 +7,8 @@ public class ChangePasswordValidator : AbstractValidator<CreateChangePasswordReq
 {
     public ChangePasswordValidator()
     {
-        RuleFor(cp => cp.Mail).NotEmpty();
-        RuleFor(cp => cp.Mail).EmailAddress();
+        RuleFor(cp => cp.Email).NotEmpty();
+        RuleFor(cp => cp.Email).EmailAddress();
         RuleFor(cp => cp.Password).NotEmpty();
         RuleFor(cp => cp.Password).MinimumLength(8);
         RuleFor(cp => cp.Password).MaximumLength(16);
