@@ -2,6 +2,6 @@
 
 namespace Business.Concretes;
 
-public class RoleManager : IRoleService
+public class RoleManager
 {
 }

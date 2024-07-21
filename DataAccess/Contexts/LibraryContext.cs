@@ -15,7 +15,7 @@ public class LibraryContext : DbContext
     public LibraryContext(DbContextOptions options, IConfiguration configuration) : base(options)
     {
         Configuration = configuration;
-        Database.EnsureCreated();
+        //Database.EnsureCreated();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

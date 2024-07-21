@@ -11,9 +11,12 @@ public static class BusinessServiceRegistration
 {
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
-        services.AddScoped<IUserService, UserManager>();
+        //services.AddScoped<IUserService, UserManager>();
         services.AddScoped<ICategoryService, CategoryManager>();
         services.AddScoped<IAdminService, AdminManager>();
+        services.AddScoped<IAuthorService, AuthorManager>();
+        services.AddScoped<ICategoryService, CategoryManager>();
+        //services.AddScoped<IRoleService, RoleManager>();
 
         var assembly = Assembly.GetExecutingAssembly();
         services.AddAutoMapper(assembly);

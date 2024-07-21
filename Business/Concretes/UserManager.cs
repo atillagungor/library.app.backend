@@ -2,6 +2,6 @@
 
 namespace Business.Concretes;
 
-public class UserManager : IUserService
+public class UserManager
 {
 }

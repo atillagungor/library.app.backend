@@ -12,9 +12,9 @@ public static class DataAccessServiceRegistration
     {
 
 #if _WINDOWS
-        services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("LibraryAppDb")));
+        services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 #else
-        services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("LibraryAppDb2")));
+        services.AddDbContext<LibraryContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 #endif
 
         services.AddScoped<IUserDal, EfUserDal>();

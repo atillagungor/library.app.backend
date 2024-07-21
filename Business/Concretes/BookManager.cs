@@ -2,6 +2,6 @@
 
 namespace Business.Concretes;
 
-public class BookManager : IBookService
+public class BookManager
 {
 }
