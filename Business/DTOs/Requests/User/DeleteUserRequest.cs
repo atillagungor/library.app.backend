@@ -1,6 +1,8 @@
-﻿namespace Business.Dtos.Requests.User;
-
-public class DeleteUserRequest
+﻿namespace Business.Dtos.Requests.User
 {
-    public Guid Id { get; set; }
+    public class DeleteUserRequest
+    {
+        public Guid? Id { get; set; }
+        public string? Email { get; set; }
+    }
 }

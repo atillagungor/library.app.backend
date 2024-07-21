@@ -3,6 +3,7 @@ using Business.Abstracts;
 using Business.Dtos.Requests.Category;
 using Business.Dtos.Responses.Category;
 using Business.Rules;
+using Core.Aspects.Autofac.SecuredOperation;
 using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.DataAccess.Paging;
 using Core.Utilities.Messages;
@@ -14,10 +15,10 @@ namespace Business.Concretes;
 public class CategoryManager : ICategoryService
 {
     private readonly ICategoryDal _categoryDal;
-    private readonly CategoryBusinessRules _categoryBusinessRules;
+    private readonly CategoryBusinessRule _categoryBusinessRules;
     private readonly IMapper _mapper;
 
-    public CategoryManager(ICategoryDal categoryDal, CategoryBusinessRules categoryBusinessRules, IMapper mapper)
+    public CategoryManager(ICategoryDal categoryDal, CategoryBusinessRule categoryBusinessRules, IMapper mapper)
     {
         _categoryDal = categoryDal;
         _categoryBusinessRules = categoryBusinessRules;
@@ -62,8 +63,6 @@ public class CategoryManager : ICategoryService
 
     public async Task<DeletedCategoryResponse> DeleteByIdAsync(Guid id)
     {
-        await _categoryBusinessRules.CheckIfExistsById(id);
-
         var category = await _categoryDal.GetAsync(c => c.Id == id);
         if (category == null)
         {
@@ -74,7 +73,24 @@ public class CategoryManager : ICategoryService
 
         return new DeletedCategoryResponse
         {
-            Id = id
+            Id = category.Id
+        };
+    }
+
+    [SecuredOperation("admin")]
+    public async Task<DeletedCategoryResponse> DeleteAsync(DeleteCategoryRequest deleteCategoryRequest)
+    {
+        var category = await _categoryDal.GetAsync(c => c.Id == deleteCategoryRequest.Id);
+        if (category == null)
+        {
+            throw new BusinessException("Category not found.", BusinessCoreTitles.CannotFindError);
+        }
+
+        await _categoryDal.DeleteAsync(category);
+
+        return new DeletedCategoryResponse
+        {
+            Id = category.Id
         };
     }
 

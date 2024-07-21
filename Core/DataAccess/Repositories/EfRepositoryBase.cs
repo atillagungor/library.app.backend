@@ -1,5 +1,4 @@
-﻿
-using Core.DataAccess.Dynamic;
+﻿using Core.DataAccess.Dynamic;
 using Core.DataAccess.Paging;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;

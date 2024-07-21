@@ -1,9 +1,11 @@
-﻿namespace Business.Dtos.Requests.User;
-
-public class CreateUserRequest
+﻿namespace Business.Dtos.Requests.User
 {
-    public string Username { get; set; }
-    public string PasswordHash { get; set; }
-    public string Email { get; set; }
-    public Guid RoleId { get; set; }
+    public class CreateUserRequest
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public byte[]? PasswordHash { get; set; }
+        public byte[]? PasswordSalt { get; set; }
+    }
 }

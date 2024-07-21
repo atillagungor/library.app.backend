@@ -3,21 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Concretes;
 
-public class User : Entity<Guid>
+public class User : Entity<Guid>,IUser
 {
-    [Required]
-    public string Username { get; set; }
-
-    [Required]
-    public string PasswordHash { get; set; }
-
-    [Required]
-    [EmailAddress]
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
     public string Email { get; set; }
-
-    [Required]
-    public Guid RoleId { get; set; }
-
-    [Required]
-    public Role Role { get; set; }
+    public byte[] PasswordSalt { get; set; }
+    public byte[] PasswordHash { get; set; }
+    public ICollection<UserOperationClaim> Claims { get; set; }
+    public ICollection<ForgotPassword> ForgotPasswords { get; set; }
 }

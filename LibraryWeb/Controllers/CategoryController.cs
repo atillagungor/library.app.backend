@@ -1,6 +1,5 @@
 ﻿using Business.Abstracts;
 using Business.Dtos.Requests.Category;
-using Business.Dtos.Responses.Category;
 using Core.Aspects.Autofac.SecuredOperation;
 using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.DataAccess.Paging;
@@ -53,11 +52,26 @@ public class CategoriesController : ControllerBase
         try
         {
             var response = await _categoryService.DeleteByIdAsync(id);
-            return Ok(new { id = response.Id }); // Response olarak id döndürüyoruz
+            return Ok(new { id = response.Id });
         }
         catch (BusinessException ex)
         {
             return NotFound(new { message = ex.Message });
+        }
+    }
+
+    //[SecuredOperation("admin")]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteAsync(DeleteCategoryRequest request)
+    {
+        try
+        {
+            var response = await _categoryService.DeleteAsync(request);
+            return Ok(response);
+        }
+        catch (BusinessException ex)
+        {
+            return NotFound(new { message = ex.Message});
         }
     }
 

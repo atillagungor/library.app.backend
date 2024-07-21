@@ -8,28 +8,17 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.ToTable("Users");
-        builder.HasKey(u => u.Id);
+        builder.ToTable("Users").HasKey(u => u.Id);
 
-        builder.Property(u => u.Username)
-            .IsRequired()
-            .HasColumnName("Username");
+        builder.Property(u => u.Id).HasColumnName("Id").IsRequired();
+        builder.Property(u => u.PasswordHash).HasColumnName("PasswordHash").IsRequired();
+        builder.Property(u => u.PasswordSalt).HasColumnName("PasswordSalt").IsRequired();
+        builder.Property(u => u.Email).HasColumnName("Email").IsRequired();
 
-        builder.Property(u => u.PasswordHash)
-            .IsRequired()
-            .HasColumnName("PasswordHash");
+        builder.HasIndex(u => u.Email, "UK_Users_Email").IsUnique();
 
-        builder.Property(u => u.Email)
-            .IsRequired()
-            .HasColumnName("Email");
-
-        builder.Property(u => u.RoleId)
-            .IsRequired()
-            .HasColumnName("RoleId");
-
-        builder.HasOne(u => u.Role)
-            .WithMany()
-            .HasForeignKey(u => u.RoleId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasQueryFilter(u => !u.DeletedDate.HasValue);
+        builder.HasMany(u => u.Claims).WithOne(uc => uc.User).HasForeignKey(uc => uc.UserId);
+        builder.HasMany(u => u.ForgotPasswords).WithOne(fp => fp.User).HasForeignKey(fp => fp.UserId);
     }
 }

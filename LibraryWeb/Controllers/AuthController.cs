@@ -1,0 +1,44 @@
+﻿using Business.Abstracts;
+using Business.Dtos.Requests.Auth;
+using Microsoft.AspNetCore.Mvc;
+
+namespace WebApi.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthsController : ControllerBase
+    {
+        private readonly IAuthService _authService;
+
+        public AuthsController(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Login(LoginRequest loginRequest)
+        {
+            var userToLogin = await _authService.Login(loginRequest);
+            if (userToLogin == null)
+            {
+                return Unauthorized("Invalid credentials");
+            }
+
+            var result = _authService.CreateAccessToken(userToLogin);
+            return Ok(result);
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterRequest registerRequest)
+        {
+            var registeredUser = await _authService.Register(registerRequest);
+            if (registeredUser == null)
+            {
+                return Conflict("User already exists or could not be registered");
+            }
+
+            var result = _authService.CreateAccessToken(registeredUser);
+            return Ok(result);
+        }
+    }
+}

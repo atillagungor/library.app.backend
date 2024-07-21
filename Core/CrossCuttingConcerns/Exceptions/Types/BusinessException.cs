@@ -2,7 +2,7 @@
 
 public class BusinessException : Exception
 {
-    public BusinessException(string? message, string title, int statusCode)
+    public BusinessException(string? message, string title, int? statusCode = null)
         : base(message)
     {
         Title = title;
@@ -10,5 +10,5 @@ public class BusinessException : Exception
     }
 
     public string Title { get; }
-    public int StatusCode { get; }
+    public int? StatusCode { get; }
 }

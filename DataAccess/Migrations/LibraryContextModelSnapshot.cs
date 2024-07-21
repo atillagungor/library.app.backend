@@ -34,26 +34,20 @@ namespace DataAccess.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Email");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("PasswordHash");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("RoleId");
-
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Username");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("Admins", (string)null);
                 });
@@ -163,11 +157,44 @@ namespace DataAccess.Migrations
                     b.ToTable("Categories", (string)null);
                 });
 
-            modelBuilder.Entity("Entities.Concretes.Role", b =>
+            modelBuilder.Entity("Entities.Concretes.ForgotPassword", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Code");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ForgotPasswords", (string)null);
+                });
+
+            modelBuilder.Entity("Entities.Concretes.OperationClaim", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -185,14 +212,15 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("OperationClaims", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Concretes.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -202,42 +230,62 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("nvarchar(450)")
                         .HasColumnName("Email");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("PasswordHash");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("RoleId");
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("PasswordSalt");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Username");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex(new[] { "Email" }, "UK_Users_Email")
+                        .IsUnique();
 
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("Entities.Concretes.Admin", b =>
+            modelBuilder.Entity("Entities.Concretes.UserOperationClaim", b =>
                 {
-                    b.HasOne("Entities.Concretes.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("UserId");
 
-                    b.Navigation("Role");
+                    b.Property<Guid>("OperationClaimId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("OperationClaimId");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "OperationClaimId");
+
+                    b.HasIndex("OperationClaimId");
+
+                    b.ToTable("UserOperationClaims", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Concretes.Book", b =>
@@ -263,15 +311,34 @@ namespace DataAccess.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Entities.Concretes.User", b =>
+            modelBuilder.Entity("Entities.Concretes.ForgotPassword", b =>
                 {
-                    b.HasOne("Entities.Concretes.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("Entities.Concretes.User", "User")
+                        .WithMany("ForgotPasswords")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Role");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Entities.Concretes.UserOperationClaim", b =>
+                {
+                    b.HasOne("Entities.Concretes.OperationClaim", "OperationClaim")
+                        .WithMany("Users")
+                        .HasForeignKey("OperationClaimId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entities.Concretes.User", "User")
+                        .WithMany("Claims")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OperationClaim");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Entities.Concretes.Author", b =>
@@ -282,6 +349,18 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Entities.Concretes.Category", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("Entities.Concretes.OperationClaim", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Entities.Concretes.User", b =>
+                {
+                    b.Navigation("Claims");
+
+                    b.Navigation("ForgotPasswords");
                 });
 #pragma warning restore 612, 618
         }

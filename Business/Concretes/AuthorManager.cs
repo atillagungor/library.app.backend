@@ -14,10 +14,10 @@ namespace Business.Concretes;
 public class AuthorManager : IAuthorService
 {
     private readonly IAuthorDal _authorDal;
-    private readonly AuthorBusinessRules _authorBusinessRules;
+    private readonly AuthorBusinessRule _authorBusinessRules;
     private readonly IMapper _mapper;
 
-    public AuthorManager(IAuthorDal authorDal, AuthorBusinessRules authorBusinessRules, IMapper mapper)
+    public AuthorManager(IAuthorDal authorDal, AuthorBusinessRule authorBusinessRules, IMapper mapper)
     {
         _authorDal = authorDal;
         _authorBusinessRules = authorBusinessRules;

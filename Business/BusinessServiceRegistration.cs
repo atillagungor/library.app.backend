@@ -1,7 +1,9 @@
 ﻿using Business.Abstracts;
 using Business.Concretes;
+using Business.EmailSenderProcess;
 using Core.Business.Rules;
 using Core.Entities;
+using Core.Utilities.Security.Jwt;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -11,12 +13,15 @@ public static class BusinessServiceRegistration
 {
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
-        //services.AddScoped<IUserService, UserManager>();
+        services.AddScoped<IUserService, UserManager>();
         services.AddScoped<ICategoryService, CategoryManager>();
         services.AddScoped<IAdminService, AdminManager>();
         services.AddScoped<IAuthorService, AuthorManager>();
         services.AddScoped<ICategoryService, CategoryManager>();
-        //services.AddScoped<IRoleService, RoleManager>();
+        services.AddScoped<IForgotPasswordService, ForgotPasswordManager>();
+        services.AddScoped<IEmailManager, EmailManager>();
+        services.AddScoped<ITokenHelper, JwtHelper>();
+        services.AddScoped<IAuthService, AuthManager>();
 
         var assembly = Assembly.GetExecutingAssembly();
         services.AddAutoMapper(assembly);
