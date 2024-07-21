@@ -7,14 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Requests\Category\" />
-    <Folder Include="DTOs\Requests\Admin\" />
-    <Folder Include="DTOs\Requests\Role\" />
-    <Folder Include="DTOs\Requests\User\" />
-    <Folder Include="DTOs\Responses\Admin\" />
-    <Folder Include="DTOs\Responses\Category\" />
-    <Folder Include="DTOs\Responses\Role\" />
-    <Folder Include="DTOs\Responses\User\" />
     <Folder Include="Rules\" />
   </ItemGroup>
 
