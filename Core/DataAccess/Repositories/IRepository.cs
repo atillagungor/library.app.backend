@@ -5,8 +5,9 @@ using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
 namespace Core.DataAccess.Repositories;
+
 public interface IRepository<TEntity, TEntityId> : IQuery<TEntity>
-where TEntity : Entity<TEntityId>
+    where TEntity : Entity<TEntityId>
 {
     TEntity? Get(
         Expression<Func<TEntity, bool>> predicate,
@@ -15,17 +16,17 @@ where TEntity : Entity<TEntityId>
         bool enableTracking = true
     );
 
-    Paginate<TEntity> GetList(
+    IPaginate<TEntity> GetList(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         int index = 0,
-        int size = 10,
-        bool withDeleted = false, //silinenlerde gelsin mi
+        int size = 5,
+        bool withDeleted = false,
         bool enableTracking = true
     );
 
-    Paginate<TEntity> GetListByDynamic(
+    IPaginate<TEntity> GetListByDynamic(
         DynamicQuery dynamic,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,

@@ -9,6 +9,7 @@ using Core.DataAccess.Paging;
 using Core.Utilities.Messages;
 using DataAccess.Abstracts;
 using Entities.Concretes;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Concretes;
 
@@ -40,7 +41,7 @@ public class BookManager : IBookService
         var books = await _bookDal.GetListAsync(
             predicate: null,
             orderBy: q => q.OrderBy(b => b.Name),
-            include: null,
+            include: b => b.Include(x => x.Author),
             index: pageRequest.PageIndex,
             size: pageRequest.PageSize
         );

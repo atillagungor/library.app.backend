@@ -4,121 +4,63 @@ using Business.Dtos.Requests.Category;
 using Business.Dtos.Responses.Category;
 using Business.Rules;
 using Core.Aspects.Autofac.SecuredOperation;
-using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.DataAccess.Paging;
-using Core.Utilities.Messages;
 using DataAccess.Abstracts;
 using Entities.Concretes;
 
 namespace Business.Concretes;
-
 public class CategoryManager : ICategoryService
 {
-    private readonly ICategoryDal _categoryDal;
-    private readonly CategoryBusinessRule _categoryBusinessRules;
-    private readonly IMapper _mapper;
-
-    public CategoryManager(ICategoryDal categoryDal, CategoryBusinessRule categoryBusinessRules, IMapper mapper)
+    ICategoryDal _categoryDal;
+    IMapper _mapper;
+    CategoryBusinessRule _categoryBusinessRules;
+    public CategoryManager(ICategoryDal categoryManager, IMapper mapper, CategoryBusinessRule categoryBusinessRules)
     {
-        _categoryDal = categoryDal;
-        _categoryBusinessRules = categoryBusinessRules;
+        _categoryDal = categoryManager;
         _mapper = mapper;
+        _categoryBusinessRules = categoryBusinessRules;
     }
-
+    //[SecuredOperation("admin")]
     public async Task<CreatedCategoryResponse> AddAsync(CreateCategoryRequest createCategoryRequest)
     {
-        await _categoryBusinessRules.CheckIfCategoryNameIsUniqueAsync(createCategoryRequest.Name);
+        await _categoryBusinessRules.AlreadyExists(createCategoryRequest.Name);
+        Category cat = _mapper.Map<Category>(createCategoryRequest);
+        Category createdCat = await _categoryDal.AddAsync(cat);
 
-        var category = _mapper.Map<Category>(createCategoryRequest);
-        var addedCategory = await _categoryDal.AddAsync(category);
-
-        return _mapper.Map<CreatedCategoryResponse>(addedCategory);
+        CreatedCategoryResponse createdCatResponse = _mapper.Map<CreatedCategoryResponse>(createdCat);
+        return createdCatResponse;
     }
-
-    public async Task<IPaginate<GetListCategoryResponse>> GetListAsync(PageRequest pageRequest)
-    {
-        var categories = await _categoryDal.GetListAsync(
-            predicate: null,
-            orderBy: q => q.OrderBy(c => c.Name),
-            include: null,
-            index: pageRequest.PageIndex,
-            size: pageRequest.PageSize
-        );
-
-        var categoryResponses = _mapper.Map<List<GetListCategoryResponse>>(categories.Items);
-
-        var totalCount = categories.Count;
-        var totalPages = (int)Math.Ceiling((double)totalCount / pageRequest.PageSize);
-
-        return new Paginate<GetListCategoryResponse>
-        {
-            Items = categoryResponses,
-            Count = totalCount,
-            Index = pageRequest.PageIndex,
-            Size = pageRequest.PageSize,
-            Pages = totalPages,
-            From = pageRequest.PageIndex * pageRequest.PageSize
-        };
-    }
-
-    public async Task<DeletedCategoryResponse> DeleteByIdAsync(Guid id)
-    {
-        var category = await _categoryDal.GetAsync(c => c.Id == id);
-        if (category == null)
-        {
-            throw new BusinessException("Category not found.", BusinessCoreTitles.CannotFindError);
-        }
-
-        await _categoryDal.DeleteAsync(category);
-
-        return new DeletedCategoryResponse
-        {
-            Id = category.Id
-        };
-    }
-
-    [SecuredOperation("admin")]
+    //[SecuredOperation("admin")]
     public async Task<DeletedCategoryResponse> DeleteAsync(DeleteCategoryRequest deleteCategoryRequest)
     {
-        var category = await _categoryDal.GetAsync(c => c.Id == deleteCategoryRequest.Id);
-        if (category == null)
-        {
-            throw new BusinessException("Category not found.", BusinessCoreTitles.CannotFindError);
-        }
+        Category cat = await _categoryBusinessRules.CheckIfExistsById(deleteCategoryRequest.Id);
+        Category deletedCat = await _categoryDal.DeleteAsync(cat, true);
 
-        await _categoryDal.DeleteAsync(category);
-
-        return new DeletedCategoryResponse
-        {
-            Id = category.Id
-        };
-    }
-
-    public async Task<UpdatedCategoryResponse> UpdateAsync(UpdateCategoryRequest updateCategoryRequest)
-    {
-        await _categoryBusinessRules.ValidateCategoryForUpdateAsync(updateCategoryRequest.Id, updateCategoryRequest.Name);
-
-        var category = await _categoryDal.GetAsync(c => c.Id == updateCategoryRequest.Id);
-        if (category == null)
-        {
-            throw new BusinessException("Category not found.", BusinessCoreTitles.CannotFindError);
-        }
-
-        _mapper.Map(updateCategoryRequest, category);
-
-        var updatedCategory = await _categoryDal.UpdateAsync(category);
-
-        return _mapper.Map<UpdatedCategoryResponse>(updatedCategory);
+        DeletedCategoryResponse deletedCatResponse = _mapper.Map<DeletedCategoryResponse>(deletedCat);
+        return deletedCatResponse;
     }
 
     public async Task<GetCategoryResponse> GetByIdAsync(Guid id)
     {
-        var category = await _categoryDal.GetAsync(c => c.Id == id);
-        if (category == null)
-        {
-            throw new BusinessException("Category not found.", BusinessCoreTitles.CannotFindError);
-        }
+        Category cat = await _categoryDal.GetAsync(c => c.Id == id);
+        return _mapper.Map<GetCategoryResponse>(cat);
 
-        return _mapper.Map<GetCategoryResponse>(category);
     }
+    //[SecuredOperation("admin")]
+    public async Task<IPaginate<GetListCategoryResponse>> GetListAsync(PageRequest pageRequest)
+    {
+        var categories = await _categoryDal.GetListAsync(index: pageRequest.PageIndex, size: pageRequest.PageSize);
+        return _mapper.Map<Paginate<GetListCategoryResponse>>(categories);
+
+    }
+    //[SecuredOperation("admin")]
+    public async Task<UpdatedCategoryResponse> UpdateAsync(UpdateCategoryRequest updateCategoryRequest)
+    {
+        Category cat = await _categoryBusinessRules.CheckIfExistsById(updateCategoryRequest.Id);
+        _mapper.Map(updateCategoryRequest, cat);
+        Category updateDcat = await _categoryDal.UpdateAsync(cat);
+        UpdatedCategoryResponse updateDcatResponse = _mapper.Map<UpdatedCategoryResponse>(updateDcat);
+        return updateDcatResponse;
+    }
+
 }

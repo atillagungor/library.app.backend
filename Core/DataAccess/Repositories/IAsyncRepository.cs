@@ -5,17 +5,19 @@ using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
 namespace Core.DataAccess.Repositories;
+
 public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
-  where TEntity : Entity<TEntityId>
+where TEntity : Entity<TEntityId>
 {
     Task<TEntity?> GetAsync(
         Expression<Func<TEntity, bool>> predicate,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         bool withDeleted = false,
         bool enableTracking = true,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default
+    );
 
-    Task<Paginate<TEntity>> GetListAsync(
+    Task<IPaginate<TEntity>> GetListAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -26,7 +28,7 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
         CancellationToken cancellationToken = default
     );
 
-    Task<Paginate<TEntity>> GetListByDynamicAsync(
+    Task<IPaginate<TEntity>> GetListByDynamicAsync(
         DynamicQuery dynamic,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -38,21 +40,25 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity>
     );
 
     Task<bool> AnyAsync(
-       Expression<Func<TEntity, bool>>? predicate = null,
-       bool withDeleted = false,
-       bool enableTracking = true,
-       CancellationToken cancellationToken = default
-   );
+        Expression<Func<TEntity, bool>>? predicate = null,
+        bool withDeleted = false,
+        bool enableTracking = true,
+        CancellationToken cancellationToken = default
+    );
 
     Task<TEntity> AddAsync(TEntity entity);
 
-    Task<ICollection<TEntity>> AddRangeAsync(ICollection<TEntity> entities);
+    Task<ICollection<TEntity>> AddRangeAsync(ICollection<TEntity> entity);
 
     Task<TEntity> UpdateAsync(TEntity entity);
 
-    Task<ICollection<TEntity>> UpdateRangeAsync(ICollection<TEntity> entities);
+    Task<ICollection<TEntity>> UpdateRangeAsync(ICollection<TEntity> entity);
 
     Task<TEntity> DeleteAsync(TEntity entity, bool permanent = false);
 
-    Task<ICollection<TEntity>> DeleteRangeAsync(ICollection<TEntity> entities, bool permanent = false);
+    Task<ICollection<TEntity>> DeleteRangeAsync(ICollection<TEntity> entity, bool permanent = false);
+
+
+
+
 }

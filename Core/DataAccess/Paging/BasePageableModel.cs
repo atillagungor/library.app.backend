@@ -1,4 +1,5 @@
 ﻿namespace Core.DataAccess.Paging;
+
 public abstract class BasePageableModel
 {
     public int Index { get; set; }

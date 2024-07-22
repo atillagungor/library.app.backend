@@ -1,4 +1,5 @@
 ﻿namespace Core.DataAccess.Paging;
+
 public class PageRequest
 {
     public int PageIndex { get; set; }

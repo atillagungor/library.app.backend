@@ -1,7 +1,6 @@
 ﻿using Business.Abstracts;
 using Business.Dtos.Requests.Category;
 using Core.Aspects.Autofac.SecuredOperation;
-using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.DataAccess.Paging;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,82 +8,45 @@ namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CategoriesController : ControllerBase
+public class CategoryController : ControllerBase
 {
-    private readonly ICategoryService _categoryService;
+    ICategoryService _categoryService;
 
-    public CategoriesController(ICategoryService categoryService)
+    public CategoryController(ICategoryService categoryService)
     {
         _categoryService = categoryService;
     }
 
     [SecuredOperation("admin")]
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateCategoryRequest createCategoryRequest)
+    public async Task<IActionResult> Add([FromBody] CreateCategoryRequest catRequest)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var response = await _categoryService.AddAsync(createCategoryRequest);
-        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+        return Ok(await _categoryService.AddAsync(catRequest));
     }
 
     [HttpGet("getall")]
     public async Task<IActionResult> GetAll([FromQuery] PageRequest pageRequest)
     {
-        var response = await _categoryService.GetListAsync(pageRequest);
-        return Ok(response);
+        return Ok(await _categoryService.GetListAsync(pageRequest));
     }
 
-    [HttpGet("getbyid/{id}")]
-    public async Task<IActionResult> GetById(Guid id)
+    [HttpGet("getbyid")]
+    public async Task<IActionResult> Get(Guid id)
     {
-        var response = await _categoryService.GetByIdAsync(id);
-        return response != null ? Ok(response) : NotFound();
+        return Ok(await _categoryService.GetByIdAsync(id));
     }
 
     [SecuredOperation("admin")]
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
-    {
-        try
-        {
-            var response = await _categoryService.DeleteByIdAsync(id);
-            return Ok(new { id = response.Id });
-        }
-        catch (BusinessException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
-    }
-
-    //[SecuredOperation("admin")]
     [HttpDelete]
-    public async Task<IActionResult> DeleteAsync(DeleteCategoryRequest request)
+    public async Task<IActionResult> Delete(DeleteCategoryRequest deleteCategoryRequest)
     {
-        try
-        {
-            var response = await _categoryService.DeleteAsync(request);
-            return Ok(response);
-        }
-        catch (BusinessException ex)
-        {
-            return NotFound(new { message = ex.Message});
-        }
+        return Ok(await _categoryService.DeleteAsync(deleteCategoryRequest));
     }
 
     [SecuredOperation("admin")]
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateCategoryRequest updateCategoryRequest)
+    public async Task<IActionResult> Update(UpdateCategoryRequest updateCategoryRequest)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        var response = await _categoryService.UpdateAsync(updateCategoryRequest);
-        return Ok(response);
+        return Ok(await _categoryService.UpdateAsync(updateCategoryRequest));
     }
 }

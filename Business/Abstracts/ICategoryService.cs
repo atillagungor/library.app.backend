@@ -8,7 +8,6 @@ public interface ICategoryService
 {
     Task<CreatedCategoryResponse> AddAsync(CreateCategoryRequest createCategoryRequest);
     Task<IPaginate<GetListCategoryResponse>> GetListAsync(PageRequest pageRequest);
-    Task<DeletedCategoryResponse> DeleteByIdAsync(Guid id);
     Task<DeletedCategoryResponse> DeleteAsync(DeleteCategoryRequest deleteCategoryRequest);
     Task<UpdatedCategoryResponse> UpdateAsync(UpdateCategoryRequest updateCategoryRequest);
     Task<GetCategoryResponse> GetByIdAsync(Guid id);

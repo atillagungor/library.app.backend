@@ -1,4 +1,5 @@
 ﻿namespace Core.DataAccess.Paging;
+
 public interface IPaginate<T>
 {
     int From { get; }

@@ -1,27 +1,29 @@
-﻿using System.Linq.Dynamic.Core;
-using System.Text;
+﻿using System.Text;
+using System.Linq;
+using System.Linq.Dynamic.Core;
 
 namespace Core.DataAccess.Dynamic;
+
 public static class IQueryableDynamicFilterExtensions
 {
     private static readonly string[] _orders = { "asc", "desc" };
     private static readonly string[] _logics = { "and", "or" };
 
     private static readonly IDictionary<string, string> _operators = new Dictionary<string, string>
-{
-    { "eq", "=" },
-    { "neq", "!=" },
-    { "lt", "<" },
-    { "lte", "<=" },
-    { "gt", ">" },
-    { "gte", ">=" },
-    { "isnull", "== null" },
-    { "isnotnull", "!= null" },
-    { "startswith", "StartsWith" },
-    { "endswith", "EndsWith" },
-    { "contains", "Contains" },
-    { "doesnotcontain", "Contains" }
-};
+    {
+        { "eq", "=" },
+        { "neq", "!=" },
+        { "lt", "<" },
+        { "lte", "<=" },
+        { "gt", ">" },
+        { "gte", ">=" },
+        { "isnull", "== null" },
+        { "isnotnull", "!= null" },
+        { "startswith", "StartsWith" },
+        { "endswith", "EndsWith" },
+        { "contains", "Contains" },
+        { "doesnotcontain", "Contains" }
+    };
 
     public static IQueryable<T> ToDynamic<T>(this IQueryable<T> query, DynamicQuery dynamicQuery)
     {
@@ -108,6 +110,7 @@ public static class IQueryableDynamicFilterExtensions
                 throw new ArgumentException("Invalid Logic");
             return $"{where} {filter.Logic} ({string.Join(separator: $" {filter.Logic} ", value: filter.Filters.Select(f => Transform(f, filters)).ToArray())})";
         }
+
         return where.ToString();
     }
 }

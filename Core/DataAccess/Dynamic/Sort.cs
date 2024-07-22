@@ -1,4 +1,5 @@
 ﻿namespace Core.DataAccess.Dynamic;
+
 public class Sort
 {
     public string Field { get; set; }
