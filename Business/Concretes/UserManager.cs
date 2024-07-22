@@ -3,7 +3,6 @@ using Business.Abstracts;
 using Business.Dtos.Requests.User;
 using Business.Dtos.Responses.User;
 using Business.Rules;
-using Core.Aspects.Autofac.SecuredOperation;
 using Core.DataAccess.Paging;
 using Core.Entities;
 using DataAccess.Abstracts;
@@ -32,7 +31,7 @@ public class UserManager : IUserService
         return result;
     }
 
-    [SecuredOperation("admin")]
+    //[SecuredOperation("admin")]
     public async Task<DeletedUserResponse> DeleteByIdAsync(Guid id)
     {
         User user;
@@ -42,7 +41,7 @@ public class UserManager : IUserService
         return deletedUserResponse;
     }
 
-    [SecuredOperation("admin")]
+    //[SecuredOperation("admin")]
     public async Task<DeletedUserResponse> DeleteByMailAsync(string email)
     {
         User user;
@@ -65,7 +64,7 @@ public class UserManager : IUserService
         return result;
     }
 
-    [SecuredOperation("admin")]
+    //[SecuredOperation("admin")]
     public async Task<IPaginate<GetListUserResponse>> GetListAsync(PageRequest pageRequest)
     {
         var result = await _userDal.GetListAsync(index: pageRequest.PageIndex, size: pageRequest.PageSize);

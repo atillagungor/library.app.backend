@@ -1,44 +1,46 @@
 ﻿using Business.Abstracts;
 using Business.Dtos.Requests.Auth;
+using Business.Dtos.Requests.ChangePassword;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class AuthsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthsController : ControllerBase
+    private IAuthService _authService;
+
+    public AuthsController(IAuthService authService)
     {
-        private readonly IAuthService _authService;
+        _authService = authService;
+    }
 
-        public AuthsController(IAuthService authService)
+    [HttpPost("login")]
+    public async Task<ActionResult> Login(LoginRequest loginRequest)
+    {
+        var userToLogin = await _authService.Login(loginRequest);
+
+        var result = _authService.CreateAccessToken(userToLogin);
+        return Ok(result);
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(RegisterRequest registerRequest)
+    {
+        var registeredUser = await _authService.Register(registerRequest);
+        if (registeredUser == null)
         {
-            _authService = authService;
+            return Ok(null);
         }
+        var result = _authService.CreateAccessToken(registeredUser);
+        return Ok(result);
+    }
 
-        [HttpPost("login")]
-        public async Task<ActionResult> Login(LoginRequest loginRequest)
-        {
-            var userToLogin = await _authService.Login(loginRequest);
-            if (userToLogin == null)
-            {
-                return Unauthorized("Invalid credentials");
-            }
-
-            var result = _authService.CreateAccessToken(userToLogin);
-            return Ok(result);
-        }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest registerRequest)
-        {
-            var registeredUser = await _authService.Register(registerRequest);
-            if (registeredUser == null)
-            {
-                return Conflict("User already exists or could not be registered");
-            }
-
-            var result = _authService.CreateAccessToken(registeredUser);
-            return Ok(result);
-        }
+    [HttpPost("changepassword")]
+    public async Task<IActionResult> ChangePassword(CreateChangePasswordRequest createChangePasswordRequest)
+    {
+        await _authService.ChangePassword(createChangePasswordRequest);
+        return Ok(true);
     }
 }
